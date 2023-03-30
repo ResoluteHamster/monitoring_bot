@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "monitoring-bot"
+version = "0.1.0"
+description = ""
+authors = ["resolute_hamster <resolute_hamster@posteo.net>"]
+readme = "README.md"
+packages = [{include = "monitoring_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.28.2"
+pandas = "^1.5.3"
+websocket-client = "^1.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
