@@ -4,6 +4,11 @@ from monitor.storage import BinanceStorage
 
 
 class MultiStorageProcess(Process):
+    '''
+    Этот процесс собирает и обновляет цены закрытия минутных свечей за последние 1000 минут по двум парам:
+    BTCUSDT и фьючерсу ETHUSDT. Каждую минуту обьединяет данные в один датафрейм и считает:
+    корреляцию Пирсона, средее по двум парам за 60 минут.
+    '''
     def __init__(self, *args, **kwargs):
         self.coefficients = kwargs['coefficients']
         self.multi_storage_running_event = kwargs['multi_storage_running_event']
@@ -51,6 +56,7 @@ class MultiStorageProcess(Process):
 
 
 class BTCWatcher(Process):
+    'Этот процесс отслеживает текущую цену BTCUSDT и считает отклонение от среднего в процентах'
     def __init__(self, *args, **kwargs):
         self.coefficients = kwargs['coefficients']
         self.multi_storage_running_event = kwargs['multi_storage_running_event']
@@ -82,6 +88,7 @@ class BTCWatcher(Process):
 
 
 class ETHWatcher(Process):
+    'Этот процесс отслеживает текущую цену фьючерса ETHUSDT и его действительное отклонение, исключая влияние BTCUSDT'
     def __init__(self, *args, **kwargs):
         self.coefficients = kwargs['coefficients']
         self.btc_watcher_running_event = kwargs['btc_watcher_running_event']
@@ -105,8 +112,8 @@ class ETHWatcher(Process):
                         deviation_eth_in_percent - (self.coefficients['deviation_btc_in_percent'] *
                                                     self.coefficients['pearson_correlation'])
 
-                    with Logger() as log_obj:
-                        log_obj.logger.info(f'{real_deviation_eth_in_percent=}')
+                    # with Logger() as log_obj:
+                    #     log_obj.logger.info(f'{real_deviation_eth_in_percent=}')
 
                     if real_deviation_eth_in_percent > 1:
                         print('Real deviation of the ETH price without the influence of the BTC movement '

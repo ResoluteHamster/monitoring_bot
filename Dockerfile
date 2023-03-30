@@ -24,5 +24,5 @@ ENV PATH="${PATH}:${POETRY_VENV}/bin"
 COPY pyproject.toml poetry.loc[k] /app/
 RUN poetry install --no-root --no-cache --without dev -vvv
 
-CMD ["poetry", "run","python", "src/main.py"]
+CMD poetry run python src/main.py
 
